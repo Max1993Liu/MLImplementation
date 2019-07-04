@@ -5,12 +5,13 @@ import tqdm
 
 class RegressionBase():
     
-    def __init__(self, C=0.01, penalty='l1', lr=1e-6, max_iters=1000):
+    def __init__(self, C=0.01, penalty='l1', lr=1e-6, max_iters=1000, tolerance=1e-5):
         self.C = C
         self.penalty = penalty
         self.lr = lr
         self.max_iters = max_iters
         self.weight = None
+        self.tolerance = tolerance
 
     @staticmethod
     def add_intercept(X):
@@ -29,7 +30,8 @@ class RegressionBase():
     def _pre_fit(self, X, y):
         X = self.add_intercept(X)
         X, y = torch.tensor(X, dtype=torch.double), torch.tensor(y, dtype=torch.double)
-        self.weight = torch.randn(X.shape[1], dtype=torch.double, requires_grad=True)
+        # self.weight = torch.randn(X.shape[1], dtype=torch.double, requires_grad=True)
+        self.weight = torch.ones(X.shape[1], dtype=torch.double, requires_grad=True)
         return X, y
 
     def _loss(self, X, y):
@@ -46,7 +48,7 @@ class RegressionBase():
             if show_loss and step % 100 == 0:
                 print('Loss at step {}: {:.2f}'.format(step, loss))
             
-            if loss_history and (loss - loss_history[-1]) ** 2 < 0.0001:
+            if loss_history and (loss - loss_history[-1]) ** 2 < self.tolerance:
                 return self
             
             loss_history.append(loss)
