@@ -8,9 +8,11 @@ from .preprocessing import standardize
 
 class KNNBase:
 
-    def __init__(self, k=3, distance='euclidean_distance'):
+    def __init__(self, k=3, standardize=True, distance='euclidean_distance'):
         self.k = k
         self.distance = distance
+        self.standardize = standardize
+
         if isinstance(distance, str):
             if distance == 'euclidean_distance':
                 self.distance_fn = euclidean_distance
@@ -23,7 +25,7 @@ class KNNBase:
 
 
     def fit(self, X, y):
-        self.X = X
+        self.X = standardize(X) if self.standardize else X
         self.y = y
 
     def _find_neighbours(self, x):
