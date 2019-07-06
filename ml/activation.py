@@ -5,9 +5,9 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 
-def softmax(x):
-    exp = np.exp(x)
-    return exp / np.sum(exp, axis=1, keepdims=True)
+def softmax(z):
+    e = np.exp(z - np.amax(z, axis=1, keepdims=True))
+    return e / np.sum(e, axis=1, keepdims=True)
 
 
 def relu(x):
