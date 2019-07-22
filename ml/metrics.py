@@ -56,3 +56,14 @@ def roc_curve(y_true, y_pred):
 def roc_auc_score(y_true, y_pred):
 	tpr, fpr, _ = roc_curve(y_true, y_pred)
 	return auc(fpr, tpr)
+
+
+def f1_score(y_true, y_pred):
+    """ f1 = 2 * (precision * recall) / (precision + recall) """
+    assert set(y_true) == set([0, 1]), 'Only support binary labels'
+    assert set(y_pred) == set([0, 1]), 'The prediction should be binary 0, 1'
+
+    y_true, y_pred = y_true.astype(bool), y_pred.astype(bool)
+    precision = (y_true & y_pred).sum() / y_pred.sum()
+    recall = (y_true & y_pred).sum() / y_true.sum()
+    return 2 * precision * recall / (precision + recall)
